@@ -2,13 +2,74 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "",
-  "projects": {},
+  "projects": {
+    "dev-test": {
+      "root": "apps/dev-test",
+      "sourceRoot": "apps/dev-test/src",
+      "projectType": "application",
+      "prefix": "dev-test",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/dev-test",
+            "main": "apps/dev-test/src/main.ts",
+            "tsConfig": "apps/dev-test/tsconfig.app.json",
+            "assets": [
+              "apps/dev-test/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/dev-test/src/environments/environment.ts",
+                  "with": "apps/dev-test/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "dev-test:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/dev-test/tsconfig.app.json",
+              "apps/dev-test/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/dev-test/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/dev-test/jest.config.js",
+            "tsConfig": "apps/dev-test/tsconfig.spec.json"
+          }
+        }
+      }
+    }
+  },
   "cli": {
     "warnings": {
       "typescriptMismatch": false,
       "versionMismatch": false
     },
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nrwl/node"
   },
-  "schematics": {}
+  "schematics": {},
+  "defaultProject": "dev-test"
 }
